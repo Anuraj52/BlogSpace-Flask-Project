@@ -1,0 +1,40 @@
+{% extends "base.html" %}
+{% block title %}Explore stories · BlogSpace{% endblock %}
+{% block content %}
+<section class="hero">
+  <p class="eyebrow">A place for ideas</p>
+  <h1>Stories worth<br><span>sharing.</span></h1>
+  <p class="hero-copy">Discover thoughtful writing from our community, or publish a story of your own.</p>
+  {% if current_user.is_authenticated %}<a class="button" href="{{ url_for('new_post') }}">Write your story →</a>{% else %}<a class="button" href="{{ url_for('register') }}">Join the community →</a>{% endif %}
+</section>
+<section class="listing-section">
+  <div class="section-heading"><div><p class="eyebrow">The latest</p><h2>Explore posts</h2></div><span class="muted">{{ pagination.total }} stories</span></div>
+  <form class="filters" method="get" action="{{ url_for('index') }}">
+    <input type="search" name="q" value="{{ q }}" placeholder="Search title or content...">
+    <select name="category"><option value="">All categories</option>{% for category in categories %}<option value="{{ category.id }}" {% if selected_category == category.id %}selected{% endif %}>{{ category.name }}</option>{% endfor %}</select>
+    <button class="button button-dark" type="submit">Search</button>
+    {% if q or selected_category %}<a class="clear-link" href="{{ url_for('index') }}">Clear</a>{% endif %}
+  </form>
+  {% if posts %}
+    <div class="post-grid">
+    {% for post in posts %}
+      <article class="post-card">
+        <div class="card-meta"><span class="category-pill">{{ post.category.name }}</span><span>{{ post.created_at.strftime('%b %d, %Y') }}</span></div>
+        <h3><a href="{{ url_for('post_detail', post_id=post.id) }}">{{ post.title }}</a></h3>
+        <p class="excerpt">{{ post.content|striptags|truncate(180) }}</p>
+        <div class="card-bottom"><a href="{{ url_for('profile', user_id=post.author.id) }}">By {{ post.author.username }}</a><a class="read-link" href="{{ url_for('post_detail', post_id=post.id) }}">Read story →</a></div>
+      </article>
+    {% endfor %}
+    </div>
+    {% if pagination.pages > 1 %}
+    <nav class="pagination">
+      {% if pagination.has_prev %}<a href="{{ url_for('index', page=pagination.prev_num, q=q, category=selected_category or '') }}">← Previous</a>{% endif %}
+      <span>Page {{ pagination.page }} of {{ pagination.pages }}</span>
+      {% if pagination.has_next %}<a href="{{ url_for('index', page=pagination.next_num, q=q, category=selected_category or '') }}">Next →</a>{% endif %}
+    </nav>
+    {% endif %}
+  {% else %}
+    <div class="empty-state"><h3>No stories found yet.</h3><p>Try another search or be the first to publish a post.</p></div>
+  {% endif %}
+</section>
+{% endblock %}

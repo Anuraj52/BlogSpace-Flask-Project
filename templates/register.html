@@ -1,0 +1,9 @@
+{% extends "base.html" %}{% block title %}Create account · BlogSpace{% endblock %}
+{% block content %}<div class="form-card auth-card"><p class="eyebrow">Join the community</p><h1>Create an account</h1>
+<form method="post">{{ form.hidden_tag() }}
+{% for field in [form.username, form.email, form.password, form.confirm_password] %}
+<label>{{ field.label }}</label>{{ field(placeholder=field.label.text) }}
+{% for error in field.errors %}<small class="error">{{ error }}</small>{% endfor %}
+{% endfor %}
+<button class="button full" type="submit">Create account</button></form>
+<p class="form-foot">Already a member? <a href="{{ url_for('login') }}">Log in</a></p></div>{% endblock %}

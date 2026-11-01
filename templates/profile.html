@@ -1,0 +1,8 @@
+{% extends "base.html" %}{% block title %}{{ profile_user.username }} · BlogSpace{% endblock %}
+{% block content %}
+<section class="profile-hero"><div class="avatar">{{ profile_user.username[:1]|upper }}</div><div><p class="eyebrow">Writer profile</p><h1>{{ profile_user.username }}</h1><p class="muted">Member since {{ profile_user.created_at.strftime('%B %Y') }} · {{ pagination.total }} posts</p></div></section>
+<section class="listing-section"><div class="section-heading"><h2>Published stories</h2></div>
+{% if posts %}<div class="post-grid">{% for post in posts %}<article class="post-card"><div class="card-meta"><span class="category-pill">{{ post.category.name }}</span><span>{{ post.created_at.strftime('%b %d, %Y') }}</span></div><h3><a href="{{ url_for('post_detail', post_id=post.id) }}">{{ post.title }}</a></h3><p class="excerpt">{{ post.content|truncate(160) }}</p><a class="read-link" href="{{ url_for('post_detail', post_id=post.id) }}">Read story →</a></article>{% endfor %}</div>
+{% if pagination.pages > 1 %}<nav class="pagination">{% if pagination.has_prev %}<a href="{{ url_for('profile', user_id=profile_user.id, page=pagination.prev_num) }}">← Previous</a>{% endif %}<span>Page {{ pagination.page }} of {{ pagination.pages }}</span>{% if pagination.has_next %}<a href="{{ url_for('profile', user_id=profile_user.id, page=pagination.next_num) }}">Next →</a>{% endif %}</nav>{% endif %}
+{% else %}<div class="empty-state"><p>This writer has not published any stories yet.</p></div>{% endif %}
+</section>{% endblock %}

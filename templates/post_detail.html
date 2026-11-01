@@ -1,0 +1,30 @@
+{% extends "base.html" %}
+{% block title %}{{ post.title }} · BlogSpace{% endblock %}
+{% block content %}
+<article class="article">
+  <a class="back-link" href="{{ url_for('index') }}">← Back to stories</a>
+  <div class="article-meta"><span class="category-pill">{{ post.category.name }}</span><span>{{ post.created_at.strftime('%B %d, %Y') }}</span></div>
+  <h1>{{ post.title }}</h1>
+  <p class="byline">Written by <a href="{{ url_for('profile', user_id=post.author.id) }}">{{ post.author.username }}</a></p>
+  {% if current_user.is_authenticated and current_user.id == post.user_id %}
+    <div class="owner-actions"><a class="button button-light" href="{{ url_for('edit_post', post_id=post.id) }}">Edit post</a>
+    <form method="post" action="{{ url_for('delete_post', post_id=post.id) }}" onsubmit="return confirm('Delete this post?');">{{ delete_form.hidden_tag() }}<button class="button button-danger" type="submit">Delete</button></form></div>
+  {% endif %}
+  <div class="article-content">{{ post.content }}</div>
+</article>
+<section class="comments">
+  <p class="eyebrow">Community</p><h2>Comments ({{ post.comments|length }})</h2>
+  {% if current_user.is_authenticated %}
+  <form method="post" action="{{ url_for('add_comment', post_id=post.id) }}" class="comment-form">
+    {{ form.hidden_tag() }}{{ form.content(rows="3", placeholder="Share a thoughtful comment...") }}
+    {% for error in form.content.errors %}<small class="error">{{ error }}</small>{% endfor %}
+    <button class="button button-dark" type="submit">Add comment</button>
+  </form>
+  {% else %}<p class="muted"><a href="{{ url_for('login') }}">Log in</a> to join the conversation.</p>{% endif %}
+  <div class="comment-list">
+  {% for comment in post.comments|sort(attribute='created_at') %}
+    <div class="comment"><div class="comment-head"><a href="{{ url_for('profile', user_id=comment.author.id) }}">{{ comment.author.username }}</a><span>{{ comment.created_at.strftime('%b %d, %Y') }}</span></div><p>{{ comment.content }}</p></div>
+  {% else %}<p class="muted">No comments yet. Start the conversation.</p>{% endfor %}
+  </div>
+</section>
+{% endblock %}

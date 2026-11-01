@@ -1,0 +1,2 @@
+{% extends "base.html" %}{% block title %}{{ code }} · BlogSpace{% endblock %}
+{% block content %}<div class="empty-state error-page"><p class="eyebrow">Error {{ code }}</p><h1>Something went wrong.</h1><p>{{ message }}</p><a class="button" href="{{ url_for('index') }}">Return home</a></div>{% endblock %}

@@ -1,0 +1,19 @@
+{% extends "base.html" %}
+{% block title %}{% if post %}Edit{% else %}New{% endif %} post · BlogSpace{% endblock %}
+{% block content %}
+<div class="form-card wide">
+  <p class="eyebrow">Your voice matters</p>
+  <h1>{% if post %}Edit your story{% else %}Write a new story{% endif %}</h1>
+  <form method="post">
+    {{ form.hidden_tag() }}
+    <label>{{ form.title.label }}</label>{{ form.title(placeholder="Give your story a title", maxlength="160") }}
+    {% for error in form.title.errors %}<small class="error">{{ error }}</small>{% endfor %}
+    <label>{{ form.category.label }}</label>{{ form.category(placeholder="Technology, Travel, Education...", maxlength="60") }}
+    {% for error in form.category.errors %}<small class="error">{{ error }}</small>{% endfor %}
+    <label>{{ form.content.label }}</label>{{ form.content(rows="14", placeholder="Start writing your story...") }}
+    <p class="hint">Write at least 10 characters. Your text is displayed safely as plain text.</p>
+    {% for error in form.content.errors %}<small class="error">{{ error }}</small>{% endfor %}
+    <button class="button full" type="submit">{% if post %}Save changes{% else %}Publish post{% endif %}</button>
+  </form>
+</div>
+{% endblock %}
